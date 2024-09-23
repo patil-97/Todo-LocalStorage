@@ -11,16 +11,9 @@ function uid() {
   return `${timestamp}${randomNum}`; // Concatenate both to form the ID
 }
 
-let todoArr = [
-  {
-    todoItem: "JavaScript",
-    id: uid(),
-  },
-  {
-    todoItem: "Angular",
-    id: uid(),
-  },
-];
+
+
+let  todoArr = JSON.parse(localStorage.getItem("todoArr")) || [];
 
 const templateUl = (arr) => {
   let result = `<ul class="list-group">`;
@@ -36,10 +29,8 @@ const templateUl = (arr) => {
   result += `</ul>`;
   todoContainer.innerHTML = result;
 };
+ 
 
-if (localStorage.getItem("todoArr")) {
-  todoArr = JSON.parse(localStorage.getItem("todoArr"));
-}
 
 templateUl(todoArr);
 
@@ -107,14 +98,16 @@ const onUpdate = (e) => {
 };
 
 const onRemove = (e) => {
-  let getId = JSON.parse(localStorage.getItem("getId"));
-  let rmItem = todoArr.findIndex((ele) => ele.id === getId);
-  todoArr.splice(rmItem, 1);
-  cl(todoArr);
+  let getId = e.closest("li").id;
+  let rmItem = todoArr.findIndex((ele) => ele.id == getId);
   let ul = document.querySelector("ul");
   ul.removeChild(e.closest("li"));
+  todoArr.splice(rmItem, 1);
+  cl(todoArr);
   localStorage.setItem("todoArr", JSON.stringify(todoArr));
 };
+
+
 
 formContainer.addEventListener("submit", onTodoAdd);
 updateBtn.addEventListener("click", onUpdate);
